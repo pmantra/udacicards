@@ -5,7 +5,7 @@ class Decks extends Component {
     render () {
         return (
             <View>
-                <Text>You are view the decks</Text>
+                <Text>You are viewing the decks</Text>
             </View>
         )
     }
