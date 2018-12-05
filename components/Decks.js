@@ -1,27 +1,31 @@
 import React, { Component } from 'react'
 import { FlatList, View, Text } from 'react-native'
 import { getDecks, removeDecks } from '../utils/api'
-import { formatDecks } from '../utils/helpers'
 import { List, ListItem } from 'react-native-elements'
+import { connect } from 'react-redux'
+import { receiveDecks } from '../actions'
+import { formatDecks } from '../utils/helpers'
 
 class Decks extends Component {
 
     state = {
-        deckList: []
+        ready: false
     }
 
     componentDidMount() {
+        const { dispatch } = this.props
         //removeDecks()
         getDecks()
-        .then(decks => formatDecks(decks))
-        .then((deckList) => this.setState(() => ({
-            deckList
+        .then(decks => dispatch(receiveDecks(decks)))
+        .then(() => this.setState(() => ({
+            ready: true
         })))
     }
 
-    renderSeparator = () => {
+    renderSeparator = (item,index) => {
         return (
             <View
+                key={index}
                 style={{
                 height: 1,
                 width: "100%",
@@ -32,19 +36,21 @@ class Decks extends Component {
     }
 
     render () {
-        const { deckList } = this.state
+        const { decks } = this.props
+        const deckList = decks !== null ? Object.values(decks) : []
         if(deckList.length>0) {
             return (
                 <List  containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
                     <FlatList data={deckList}
-                    renderItem={({ item }) => (
+                    renderItem={({ item, index }) => (
                         <ListItem
+                        key={item.uuid}
                         title={`${item.title}`}
-                        subtitle={`${item.questions.length} cards`}
+                        subtitle={`${item.questions ? item.questions.length : 0} cards`}
                         containerStyle={{ borderBottomWidth: 0 }}
                         />
                     )}
-                    ItemSeparatorComponent={this.renderSeparator}
+                    ItemSeparatorComponent={(item,index) => this.renderSeparator(item,index)}
                     keyExtractor={(item) => item.uuid}
                     />
                 </List>
@@ -59,4 +65,10 @@ class Decks extends Component {
     }
 }
 
-export default Decks
+const mapStateToProps = (state) => {
+    return {
+        decks: state
+    }
+}
+
+export default connect(mapStateToProps)(Decks)

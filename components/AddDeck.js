@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { Text, View, TextInput, Button, KeyboardAvoidingView } from 'react-native'
 import { saveDeckTitle } from '../utils/api'
-
+import { connect } from 'react-redux'
+import { addNewDeck } from '../actions'
+import { getNewDeckObject } from '../utils/helpers'
 class AddDeck extends Component {
 
     state = {
@@ -10,7 +12,20 @@ class AddDeck extends Component {
 
     addNewDeck = () => {
         const { title } = this.state
-        saveDeckTitle(title)
+        this.props.addDeck(title)
+        this.reset()
+    }
+
+    handleInput = (title) => {
+        this.setState(() => ({
+            title
+        }))
+    }
+
+    reset = () => {
+        this.setState(() => ({
+            title: ''
+        }))
     }
 
     render () {
@@ -31,7 +46,8 @@ class AddDeck extends Component {
                     <TextInput
                         style={{height: 60, borderColor: 'gray', borderWidth: 2}}
                         placeholder="Enter Name"
-                        onChangeText={(title) => this.setState({title})}
+                        value={title}
+                        onChangeText={this.handleInput}
                         />
                 </View>
                 <View style={{  flex: 1,
@@ -49,4 +65,14 @@ class AddDeck extends Component {
     }
 }
 
-export default AddDeck
+const mapDispatchToProps = (dispatch) => {
+    return {
+        addDeck: (title) => {
+            const newDeckObject = getNewDeckObject(title)
+            saveDeckTitle(newDeckObject)
+            .then(dispatch(addNewDeck(newDeckObject)))
+        }
+    }
+}
+
+export default connect(undefined,mapDispatchToProps)(AddDeck)

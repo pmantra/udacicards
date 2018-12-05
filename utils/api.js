@@ -1,8 +1,10 @@
 import { AsyncStorage } from 'react-native'
-import { DECKS_STORAGE_KEY, uuid } from './helpers'
+import { DECKS_STORAGE_KEY } from './helpers'
+import { formatDecks } from '../utils/helpers'
 
 export async function getDecks() {
-    return await AsyncStorage.getItem(DECKS_STORAGE_KEY)
+    const decks = await AsyncStorage.getItem(DECKS_STORAGE_KEY)
+    return JSON.parse(decks)
 }
 
 export function getDeck(id) {
@@ -11,15 +13,8 @@ export function getDeck(id) {
     })
 }
 
-export function saveDeckTitle(title) {
-    console.log('saving deck with title', title)
-    return AsyncStorage.mergeItem(DECKS_STORAGE_KEY, JSON.stringify({
-        [title]: {
-            title: title,
-            uuid: uuid(),
-            questions: []
-        }
-    })).then(getDecks())
+export function saveDeckTitle(deck) {
+    return AsyncStorage.mergeItem(DECKS_STORAGE_KEY, JSON.stringify(deck))
 }
 
 export function addCardToDeck(title, card) {

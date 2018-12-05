@@ -1,19 +1,13 @@
 import React from 'react'
-import { Text, View, Platform, StatusBar } from 'react-native'
-import { Constants } from 'expo'
-import { gray, white, purple, black } from './utils/colors'
+import { View, Platform } from 'react-native'
+import { white, purple, black } from './utils/colors'
 import { createMaterialTopTabNavigator, createAppContainer, createStackNavigator } from  'react-navigation'
 import Decks from './components/Decks'
 import AddDeck from './components/AddDeck'
-
-function UdaciStatusBar ({ backgroundColor, ...props }) {
-  return (
-    <View style={{backgroundColor, height: Constants.statusBarHeight}}>
-      <StatusBar translucent backgroundColor={backgroundColor} {...props} />
-    </View>
-  )
-}
-
+import { createStore } from 'redux'
+import { Provider } from 'react-redux'
+import reducer from './reducers'
+import UdaciStatusBar from './components/UdaciStatusBar'
 
 const Tabs = createAppContainer(createMaterialTopTabNavigator({
   Decks: {
@@ -63,10 +57,12 @@ const MainNavigator = createAppContainer(createStackNavigator({
 export default class App extends React.Component {
   render() {
     return (
-      <View style={{flex: 1}}>
-        <UdaciStatusBar backgroundColor={black} barStyle="light-content" />
-        <MainNavigator />
-      </View>
+      <Provider store={createStore(reducer)}>
+        <View style={{flex: 1}}>
+          <UdaciStatusBar backgroundColor={black} barStyle="light-content" />
+          <MainNavigator />
+        </View>
+      </Provider>
     )
   }
 }
