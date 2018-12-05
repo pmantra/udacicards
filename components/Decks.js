@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import { FlatList, View, Text } from 'react-native'
+import { FlatList, View, Text, ActivityIndicator, StyleSheet } from 'react-native'
 import { getDecks, removeDecks } from '../utils/api'
 import { List, ListItem } from 'react-native-elements'
 import { connect } from 'react-redux'
 import { receiveDecks } from '../actions'
-import { formatDecks } from '../utils/helpers'
+
 
 class Decks extends Component {
 
@@ -36,9 +36,10 @@ class Decks extends Component {
     }
 
     render () {
+        const { ready } = this.state
         const { decks } = this.props
         const deckList = decks !== null ? Object.values(decks) : []
-        if(deckList.length>0) {
+        if(deckList.length>0 && ready === true) {
             return (
                 <List  containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
                     <FlatList data={deckList}
@@ -55,13 +56,19 @@ class Decks extends Component {
                     />
                 </List>
                 )
-        }
-        return(
-            deckList.length===0 &&
+        } else if(deckList.length===0 && ready === true) {
+            return (
                 <View style={{height: 50, alignItems: 'center', paddingTop: 20}}>
                     <Text style={{fontWeight: 'normal' ,fontSize: 20, color: 'black'}}>No Decks available</Text>
                 </View>
-        )
+            )
+        } else {
+            return (
+                <View style={[styles.container, styles.horizontal]}>
+                    <ActivityIndicator size="large" color="black" />
+                </View>
+            )
+        }
     }
 }
 
@@ -72,3 +79,15 @@ const mapStateToProps = (state) => {
 }
 
 export default connect(mapStateToProps)(Decks)
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center'
+    },
+    horizontal: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        padding: 10
+    }
+})
