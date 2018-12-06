@@ -35,8 +35,7 @@ class Decks extends Component {
         )
     }
 
-    onPressDeck = (e,deck) => {
-        //navigate to deck
+    onPressDeck = (e, deck) => {
         const { title } = deck
         this.props.navigation.navigate(
             'DeckView',

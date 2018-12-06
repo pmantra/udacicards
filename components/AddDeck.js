@@ -11,13 +11,22 @@ class AddDeck extends Component {
     }
 
     addNewDeck = () => {
+        const { decks } = this.props
         const { title } = this.state
-        this.props.addDeck(title)
-        this.reset()
-        this.props.navigation.navigate(
-            'DeckView',
-            { title }
-        )
+        if(title.trim() !== '') {
+            if(decks[title] === undefined) {
+                this.props.addDeck(title)
+                this.reset()
+                this.props.navigation.navigate(
+                    'DeckView',
+                    { title }
+                )
+            } else {
+                alert('Deck with that name already exists!')
+            }
+        } else {
+            alert('Deck name cannot be blank!')
+        }
     }
 
     handleInput = (title) => {
@@ -28,12 +37,13 @@ class AddDeck extends Component {
 
     reset = () => {
         this.setState(() => ({
-            title: ''
+            title: '',
+            error: {show: false, message: ''}
         }))
     }
 
     render () {
-        const { title } = this.state
+        const { title, error } = this.state
         return (
             <KeyboardAvoidingView
             style={{
@@ -69,6 +79,12 @@ class AddDeck extends Component {
     }
 }
 
+const mapStateToProps = (decks) => {
+    return {
+        decks
+    }
+}
+
 const mapDispatchToProps = (dispatch) => {
     return {
         addDeck: (title) => {
@@ -79,4 +95,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-export default connect(undefined,mapDispatchToProps)(AddDeck)
+export default connect(mapStateToProps, mapDispatchToProps)(AddDeck)

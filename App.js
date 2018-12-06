@@ -9,6 +9,7 @@ import { Provider } from 'react-redux'
 import reducer from './reducers'
 import UdaciStatusBar from './components/UdaciStatusBar'
 import DeckView from './components/DeckView'
+import Card from './components/Card'
 
 const Tabs = createAppContainer(createMaterialTopTabNavigator({
   Decks: {
@@ -55,6 +56,15 @@ const MainNavigator = createAppContainer(createStackNavigator({
   },
   DeckView: {
     screen: DeckView,
+    navigationOptions: {
+      headerTintColor: white,
+      headerStyle: {
+        backgroundColor: black,
+      }
+    }
+  },
+  Card: {
+    screen: Card,
     navigationOptions: {
       headerTintColor: white,
       headerStyle: {
