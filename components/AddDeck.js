@@ -14,6 +14,10 @@ class AddDeck extends Component {
         const { title } = this.state
         this.props.addDeck(title)
         this.reset()
+        this.props.navigation.navigate(
+            'DeckView',
+            { title }
+        )
     }
 
     handleInput = (title) => {
@@ -56,7 +60,7 @@ class AddDeck extends Component {
                                 alignItems: 'center'}}>
                     <Button
                     onPress={this.addNewDeck}
-                    title="Add"
+                    title="Create Deck"
                     color='black'
                     style={{backgroundColor: 'black', color: 'white'}} />
                 </View>

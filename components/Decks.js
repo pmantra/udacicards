@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { FlatList, View, Text, ActivityIndicator, StyleSheet } from 'react-native'
+import { FlatList, View, Text, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native'
 import { getDecks, removeDecks } from '../utils/api'
 import { List, ListItem } from 'react-native-elements'
 import { connect } from 'react-redux'
@@ -35,6 +35,15 @@ class Decks extends Component {
         )
     }
 
+    onPressDeck = (e,deck) => {
+        //navigate to deck
+        const { title } = deck
+        this.props.navigation.navigate(
+            'DeckView',
+            { title }
+        )
+    }
+
     render () {
         const { ready } = this.state
         const { decks } = this.props
@@ -44,12 +53,13 @@ class Decks extends Component {
                 <List  containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
                     <FlatList data={deckList}
                     renderItem={({ item, index }) => (
-                        <ListItem
-                        key={item.uuid}
-                        title={`${item.title}`}
-                        subtitle={`${item.questions ? item.questions.length : 0} cards`}
-                        containerStyle={{ borderBottomWidth: 0 }}
-                        />
+                        <TouchableOpacity key={item.title} onPress={(e)=>this.onPressDeck(e,item)}>
+                            <ListItem
+                                key={item.uuid}
+                                title={`${item.title}`}
+                                subtitle={`${item.questions ? item.questions.length : 0} cards`}
+                                containerStyle={{ borderBottomWidth: 0 }} />
+                        </TouchableOpacity>
                     )}
                     ItemSeparatorComponent={(item,index) => this.renderSeparator(item,index)}
                     keyExtractor={(item) => item.uuid}

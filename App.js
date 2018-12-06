@@ -8,6 +8,7 @@ import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import reducer from './reducers'
 import UdaciStatusBar from './components/UdaciStatusBar'
+import DeckView from './components/DeckView'
 
 const Tabs = createAppContainer(createMaterialTopTabNavigator({
   Decks: {
@@ -50,6 +51,15 @@ const MainNavigator = createAppContainer(createStackNavigator({
     screen: Tabs,
     navigationOptions: {
       header: null
+    }
+  },
+  DeckView: {
+    screen: DeckView,
+    navigationOptions: {
+      headerTintColor: white,
+      headerStyle: {
+        backgroundColor: black,
+      }
     }
   }
 }))
