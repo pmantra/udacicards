@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, View, TextInput, Button, KeyboardAvoidingView } from 'react-native'
+import { Text, View, TextInput, Button, KeyboardAvoidingView, StyleSheet } from 'react-native'
 import { saveDeckTitle } from '../utils/api'
 import { connect } from 'react-redux'
 import { addNewDeck } from '../actions'
@@ -37,42 +37,30 @@ class AddDeck extends Component {
 
     reset = () => {
         this.setState(() => ({
-            title: '',
-            error: {show: false, message: ''}
+            title: ''
         }))
     }
 
     render () {
-        const { title, error } = this.state
+        const { title } = this.state
         return (
-            <KeyboardAvoidingView
-            style={{
-                flex: 1,
-                flexDirection: 'column',
-                justifyContent: 'space-around',
-                alignItems: 'stretch',
-                }}
-            behavior="padding" enabled>
-                <View style={{height: 50, alignItems: 'center', paddingTop: 20}}>
-                    <Text style={{fontWeight: 'normal' ,fontSize: 20, color: 'black'}}>Give it a name</Text>
+            <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+                <View>
+                    <Text style={styles.header}>Give it a name</Text>
                 </View>
-                <View style={{flex: 1, height: 100}}>
+                <View style={styles.inputContainer}>
                     <TextInput
-                        style={{height: 60, borderColor: 'gray', borderWidth: 2}}
-                        placeholder="Enter Name"
+                        style={styles.input}
+                        placeholder="Type Name"
                         value={title}
                         onChangeText={this.handleInput}
                         />
                 </View>
-                <View style={{  flex: 1,
-                                flexDirection: 'column',
-                                justifyContent: 'center',
-                                alignItems: 'center'}}>
+                <View style={styles.buttonContainer}>
                     <Button
                     onPress={this.addNewDeck}
                     title="Create Deck"
-                    color='black'
-                    style={{backgroundColor: 'black', color: 'white'}} />
+                    color='black' />
                 </View>
             </KeyboardAvoidingView>
         )
@@ -96,3 +84,37 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddDeck)
+
+const styles = StyleSheet.create({
+    container: {
+        paddingTop: 20
+    },
+    header: {
+        fontWeight: 'normal',
+        fontSize: 20,
+        color: 'black',
+        textAlign: 'center'
+    },
+    inputContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+        alignItems: 'stretch',
+        paddingTop: 50,
+        height: 100
+    },
+    input: {
+        margin: 15,
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 1,
+        paddingLeft: 20,
+        paddingRight: 20
+    },
+    buttonContainer: {
+        paddingTop: 100,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
+})

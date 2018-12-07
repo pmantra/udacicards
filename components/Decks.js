@@ -14,7 +14,6 @@ class Decks extends Component {
 
     componentDidMount() {
         const { dispatch } = this.props
-        //removeDecks()
         getDecks()
         .then(decks => dispatch(receiveDecks(decks)))
         .then(() => this.setState(() => ({
@@ -24,14 +23,7 @@ class Decks extends Component {
 
     renderSeparator = (item,index) => {
         return (
-            <View
-                key={index}
-                style={{
-                height: 1,
-                width: "100%",
-                backgroundColor: "#CED0CE",
-                }}
-            />
+            <View key={index} style={styles.listItemSeperator} />
         )
     }
 
@@ -69,8 +61,8 @@ class Decks extends Component {
                 )
         } else if(deckList.length===0 && ready === true) {
             return (
-                <View style={{height: 50, alignItems: 'center', paddingTop: 20}}>
-                    <Text style={{fontWeight: 'normal' ,fontSize: 20, color: 'black'}}>No Decks available</Text>
+                <View style={styles.headerContainer}>
+                    <Text style={styles.header}>No Decks available</Text>
                 </View>
             )
         } else {
@@ -100,5 +92,20 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         padding: 10
+    },
+    listItemSeperator: {
+        height: 1,
+        width: "100%",
+        backgroundColor: "#CED0CE",
+    },
+    headerContainer: {
+        height: 50,
+        alignItems: 'center',
+        paddingTop: 20
+    },
+    header: {
+        fontWeight: 'normal',
+        fontSize: 20,
+        color: 'black'
     }
 })

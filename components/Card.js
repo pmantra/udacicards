@@ -1,8 +1,12 @@
 import React, { Component } from 'react'
-import { View, Text, Button, TextInput, KeyboardAvoidingView } from 'react-native'
+import { View, Text, Button, TextInput, KeyboardAvoidingView, StyleSheet } from 'react-native'
 import { connect } from 'react-redux'
 import { addCardToDeck } from '../actions'
 import { saveCardToDeck } from '../utils/api'
+
+function getSpacer () {
+    return (<View style={{paddingTop: 30}}></View>)
+}
 
 class Card extends Component {
 
@@ -33,29 +37,29 @@ class Card extends Component {
     render () {
         const { question, answer } = this.state
         return (
-            <KeyboardAvoidingView style={{flexDirection:'column', alignItems: 'center', paddingTop: 30, paddingLeft: 10, paddingRight: 10, justifyContent: 'space-between'}}>
-                <Text style={{fontWeight: 'normal' ,fontSize: 18, color: 'black'}}>
+            <KeyboardAvoidingView style={styles.container}>
+                <Text style={styles.header}>
                     Type a Question and Answer for Your Card
                 </Text>
-                <View style={{flex: 1, flexDirection: 'column', justifyContent: 'space-around', alignItems: 'stretch', paddingTop: 50, height: 100}}>
+                <View style={styles.inputContainer}>
                     <TextInput
-                        style={{height: 50, borderColor: 'gray', borderWidth: 1, paddingLeft: 20, paddingRight: 20}}
+                        style={styles.input}
                         onChangeText={(text) => this.handleInput(text,'question')}
                         placeholder='Type your Question'
                         value={question}
                     />
                 </View>
-                <View style={{paddingTop: 30}}></View>
-                <View style={{flex: 1, flexDirection: 'column', justifyContent: 'space-around', alignItems: 'stretch', paddingTop: 50, height: 100}}>
+                {getSpacer()}
+                <View style={styles.inputContainer}>
                     <TextInput
-                        style={{height: 50, borderColor: 'gray', borderWidth: 1, paddingLeft: 20, paddingRight: 20}}
+                        style={styles.input}
                         onChangeText={(text) => this.handleInput(text,'answer')}
                         placeholder='Type your Answer'
                         value={answer}
                     />
                 </View>
-                <View style={{paddingTop: 30}}></View>
-                <View style={{paddingTop: 30}}>
+                {getSpacer()}
+                <View style={styles.buttonContainer}>
                     <Button
                         onPress={this.handleAddNewCard}
                         title="Add Card To Deck"
@@ -87,3 +91,37 @@ const mapDispatchToProps = (dispatch, { navigation }) => {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Card)
+
+const styles = StyleSheet.create({
+    container: {
+        paddingTop: 20
+    },
+    header: {
+        fontWeight: 'normal',
+        fontSize: 18,
+        color: 'black',
+        textAlign: 'center',
+    },
+    inputContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+        alignItems: 'stretch',
+        paddingTop: 50,
+        height: 100
+    },
+    input: {
+        margin: 15,
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 1,
+        paddingLeft: 20,
+        paddingRight: 20
+    },
+    buttonContainer: {
+        paddingTop: 20,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
+})

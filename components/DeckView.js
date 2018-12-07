@@ -40,22 +40,21 @@ class DeckView extends Component {
         const { deck } = this.props
         const numberOfCards = deck ? deck.questions.length : 0
         return (
-            <View style={{flexDirection:'column', alignItems: 'center', paddingTop: 50, justifyContent: 'space-between'}}>
-                <Text style={{fontWeight: 'normal' ,fontSize: 20, color: 'black'}}>
+            <View style={styles.container}>
+                <Text style={styles.header}>
                     There are {numberOfCards === 0 ? 'no' : numberOfCards} cards in this deck
                 </Text>
-                <View></View>
-                <View style={{flexDirection:'column', alignItems: 'center', paddingTop: 50, justifyContent: 'space-between'}}>
+                <View style={styles.buttonContainer}>
                     <Button
                         onPress={() => this.handleAddNewCard(deck)}
                         title="Add Card"
                         color='black' />
-                    <View style={{paddingTop: 30}}></View>
+                    <View style={styles.spacer}></View>
                     <Button
                         onPress={this.handleStartQuiz}
                         title="Start Quiz"
                         color='#8181a0' />
-                    <View style={{paddingTop: 200}}></View>
+                    <View style={styles.deleteContainer}></View>
                     <TouchableOpacity onPress={() => this.handleDeleteDeck(deck)}>
                         <Text style={styles.delete}>
                             <FontAwesome name='trash' size={30} color='red' />{' '}Delete</Text>
@@ -83,6 +82,27 @@ const mapDispatchToProps = (dispatch, { navigation }) => {
 export default connect(mapStateToProps, mapDispatchToProps)(DeckView)
 
 const styles = StyleSheet.create({
+    container: {
+        paddingTop: 20
+    },
+    header: {
+        fontWeight: 'normal',
+        fontSize: 18,
+        color: 'black',
+        textAlign: 'center'
+    },
+    buttonContainer: {
+        paddingTop: 30,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    deleteContainer: {
+        paddingTop: 200
+    },
+    spacer: {
+        paddingTop: 30
+    },
     delete: {
         textAlign: 'center',
         color: 'red',
