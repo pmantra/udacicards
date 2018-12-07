@@ -46,7 +46,7 @@ class Decks extends Component {
     render () {
         const { ready } = this.state
         const { decks } = this.props
-        const deckList = decks !== null ? Object.values(decks) : []
+        const deckList = decks !== null ? Object.values(decks).sort((a,b) => a.title > b.title) : []
         if(deckList.length>0 && ready === true) {
             return (
                 <List  containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
