@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { View, Text, Keyboard, Button, TouchableOpacity, StyleSheet } from 'react-native'
 import { connect } from 'react-redux'
 import { FontAwesome } from '@expo/vector-icons'
+import { removeDeck } from '../utils/api'
+import { deleteDeck } from '../actions'
 
 class DeckView extends Component {
 
@@ -28,14 +30,15 @@ class DeckView extends Component {
         alert('Start quiz')
     }
 
-    handleDeleteDeck () {
-        alert('Delete deck')
+    handleDeleteDeck (deck) {
+        const { title } = deck
+        this.props.deleteDeck(title)
+        this.props.goBack()
     }
 
     render () {
         const { deck } = this.props
-        const { questions } = deck
-        const numberOfCards = questions.length
+        const numberOfCards = deck ? deck.questions.length : 0
         return (
             <View style={{flexDirection:'column', alignItems: 'center', paddingTop: 50, justifyContent: 'space-between'}}>
                 <Text style={{fontWeight: 'normal' ,fontSize: 20, color: 'black'}}>
@@ -53,7 +56,7 @@ class DeckView extends Component {
                         title="Start Quiz"
                         color='#8181a0' />
                     <View style={{paddingTop: 200}}></View>
-                    <TouchableOpacity onPress={this.handleDeleteDeck}>
+                    <TouchableOpacity onPress={() => this.handleDeleteDeck(deck)}>
                         <Text style={styles.delete}>
                             <FontAwesome name='trash' size={30} color='red' />{' '}Delete</Text>
                     </TouchableOpacity>
@@ -66,11 +69,18 @@ class DeckView extends Component {
 const mapStateToProps = (decks, { navigation }) => {
     const { title } = navigation.state.params
     return {
-        deck: decks[title]
+        deck: decks[title],
     }
 }
 
-export default connect(mapStateToProps)(DeckView)
+const mapDispatchToProps = (dispatch, { navigation }) => {
+    return {
+        deleteDeck: (title) => removeDeck(title).then(dispatch(deleteDeck(title))),
+        goBack: () => navigation.goBack()
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DeckView)
 
 const styles = StyleSheet.create({
     delete: {

@@ -52,13 +52,15 @@ class Decks extends Component {
                 <List  containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
                     <FlatList data={deckList}
                     renderItem={({ item, index }) => (
-                        <TouchableOpacity key={item.title} onPress={(e)=>this.onPressDeck(e,item)}>
-                            <ListItem
-                                key={item.uuid}
-                                title={`${item.title}`}
-                                subtitle={`${item.questions ? item.questions.length : 0} cards`}
-                                containerStyle={{ borderBottomWidth: 0 }} />
-                        </TouchableOpacity>
+                        (item !== undefined &&
+                            <TouchableOpacity key={item.title} onPress={(e)=>this.onPressDeck(e,item)}>
+                                <ListItem
+                                    key={item.uuid}
+                                    title={`${item.title}`}
+                                    subtitle={`${item.questions ? item.questions.length : 0} cards`}
+                                    containerStyle={{ borderBottomWidth: 0 }} />
+                            </TouchableOpacity>
+                        )
                     )}
                     ItemSeparatorComponent={(item,index) => this.renderSeparator(item,index)}
                     keyExtractor={(item) => item.uuid}
