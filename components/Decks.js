@@ -5,7 +5,6 @@ import { List, ListItem } from 'react-native-elements'
 import { connect } from 'react-redux'
 import { receiveDecks } from '../actions'
 
-
 class Decks extends Component {
 
     state = {

@@ -10,6 +10,7 @@ import reducer from './reducers'
 import UdaciStatusBar from './components/UdaciStatusBar'
 import DeckView from './components/DeckView'
 import Card from './components/Card'
+import QuizView from './components/QuizView'
 
 const Tabs = createAppContainer(createMaterialTopTabNavigator({
   Decks: {
@@ -66,6 +67,16 @@ const MainNavigator = createAppContainer(createStackNavigator({
   Card: {
     screen: Card,
     navigationOptions: {
+      headerTintColor: white,
+      headerStyle: {
+        backgroundColor: black,
+      }
+    }
+  },
+  QuizView: {
+    screen: QuizView,
+    navigationOptions: {
+      title: 'Quiz',
       headerTintColor: white,
       headerStyle: {
         backgroundColor: black,

@@ -26,8 +26,12 @@ class DeckView extends Component {
         )
     }
 
-    handleStartQuiz () {
-        alert('Start quiz')
+    handleStartQuiz (deck) {
+        const { title } = deck
+        this.props.navigation.navigate(
+            'QuizView',
+            { title }
+        )
     }
 
     handleDeleteDeck (deck) {
@@ -51,7 +55,7 @@ class DeckView extends Component {
                         color='black' />
                     <View style={styles.spacer}></View>
                     <Button
-                        onPress={this.handleStartQuiz}
+                        onPress={() => this.handleStartQuiz(deck)}
                         title="Start Quiz"
                         color='#8181a0' />
                     <View style={styles.deleteContainer}></View>
