@@ -2,13 +2,17 @@ import React, { Component } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Animated } from 'react-native'
 import * as Progress from 'react-native-progress'
 import { connect } from 'react-redux'
-import { Card, Button, Divider, Icon } from 'react-native-elements'
+import { Card, Button, Divider } from 'react-native-elements'
+import ResultsView from './ResultsView'
 
 class QuizView extends Component {
 
     state = {
         questionIndex : 0,
         questionView: true,
+        showResults: false,
+        correctResponses: 0,
+        incorrectResponses: 0
     }
 
     componentWillMount() {
@@ -35,13 +39,15 @@ class QuizView extends Component {
         })
     }
 
-    incrementQuestionCounter = () => {
+    incrementQuestionCounter = (response) => {
         const { deck } = this.props
-
         const totalNumberOfQuestions = deck.questions.length
         this.setState((prevState) => ({
             questionIndex: prevState.questionIndex<(totalNumberOfQuestions-1) ? (prevState.questionIndex + 1) : (totalNumberOfQuestions-1),
-            questionView: true
+            questionView: true,
+            showResults: prevState.questionIndex === totalNumberOfQuestions-1,
+            correctResponses: response === 'correct' ? prevState.correctResponses + 1 : prevState.correctResponses,
+            incorrectResponses: response === 'incorrect' ? prevState.incorrectResponses + 1 : prevState.incorrectResponses
         }))
     }
 
@@ -74,11 +80,22 @@ class QuizView extends Component {
         }
     }
 
+    handleResetQuiz = () => {
+        this.setState(() => ({
+            questionIndex : 0,
+            questionView: true,
+            showResults: false,
+            correctResponses: 0,
+            incorrectResponses: 0
+        }))
+    }
+
     render() {
-        const { deck } = this.props
+        const { deck, navigation } = this.props
         const { questions } = deck
-        const { questionIndex, questionView } = this.state
+        const { questionIndex, questionView, showResults, correctResponses, incorrectResponses } = this.state
         const currentQuestion = questions[questionIndex]
+        const totalNumberOfQuestions = questions.length
 
         const frontAnimatedStyle = {
             transform: [
@@ -91,13 +108,20 @@ class QuizView extends Component {
             ]
         }
 
+        const quizProgress = Number((questionIndex+1)/totalNumberOfQuestions)
+        let resultsCorrectPercent = Number((correctResponses/totalNumberOfQuestions)*100)
+        resultsCorrectPercent = Number.parseFloat(resultsCorrectPercent).toFixed(2)
+        let resultsIncorrectPercent = Number((incorrectResponses/totalNumberOfQuestions)*100)
+        resultsIncorrectPercent = Number.parseFloat(resultsIncorrectPercent).toFixed(2)
+
         return (
             <View style={styles.container}>
+                {showResults === false &&
                 <View>
                     <View style={styles.progressContainer}>
                         <Progress.Circle
                         style={styles.progress}
-                        progress={0.5}
+                        progress={quizProgress}
                         color='black'
                         size={50}
                         showsText={true}
@@ -117,13 +141,13 @@ class QuizView extends Component {
                             <Button
                                 backgroundColor='green'
                                 color='white'
-                                onPress={this.incrementQuestionCounter}
+                                onPress={() => this.incrementQuestionCounter('correct')}
                                 title='Correct'/>
                                 <Divider style={{  margin: 10 }} />
                             <Button
                                 backgroundColor='red'
                                 color='white'
-                                onPress={this.incrementQuestionCounter}
+                                onPress={() => this.incrementQuestionCounter('incorrect')}
                                 title='Incorrect'/>
                     </View>
                     <Animated.View style={[styles.flipCard, styles.flipCardBack, backAnimatedStyle, {opacity: this.backOpacity}]}>
@@ -141,6 +165,15 @@ class QuizView extends Component {
                         </TouchableOpacity>
                     </View>
                 </View>
+                }
+                {showResults === true &&
+                    <ResultsView
+                    title={deck.title}
+                    correctPercent={resultsCorrectPercent}
+                    incorrectPercent={resultsIncorrectPercent}
+                    navigation={navigation}
+                    resetQuiz={this.handleResetQuiz}/>
+                }
             </View>
         )
     }
@@ -150,6 +183,7 @@ const mapStateToProps = (decks, { navigation }) => {
     const { title } = navigation.state.params
     return {
         deck: decks[title],
+        navigation
     }
 }
 
