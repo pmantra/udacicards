@@ -12,7 +12,8 @@ class QuizView extends Component {
         questionView: true,
         showResults: false,
         correctResponses: 0,
-        incorrectResponses: 0
+        incorrectResponses: 0,
+        cardFlipped: false
     }
 
     componentWillMount() {
@@ -48,7 +49,15 @@ class QuizView extends Component {
             showResults: prevState.questionIndex === totalNumberOfQuestions-1,
             correctResponses: response === 'correct' ? prevState.correctResponses + 1 : prevState.correctResponses,
             incorrectResponses: response === 'incorrect' ? prevState.incorrectResponses + 1 : prevState.incorrectResponses
-        }))
+        }),() => {
+            const {questionView,  cardFlipped} = this.state
+            if(questionView === true && cardFlipped === true) {
+                this.flipCard()
+                this.setState(()=>({
+                    cardFlipped: false
+                }))
+            }
+        })
     }
 
     getProgressText = (deck) => {
@@ -60,7 +69,8 @@ class QuizView extends Component {
     handleTextButtonPress = () => {
         this.flipCard()
         this.setState((prevState) => ({
-            questionView: !prevState.questionView
+            questionView: !prevState.questionView,
+            cardFlipped: !prevState.cardFlipped
         }))
     }
 
@@ -86,7 +96,8 @@ class QuizView extends Component {
             questionView: true,
             showResults: false,
             correctResponses: 0,
-            incorrectResponses: 0
+            incorrectResponses: 0,
+            cardFlipped: false
         }))
     }
 
@@ -129,9 +140,17 @@ class QuizView extends Component {
                         <Text style={styles.label}>
                             {questionView === true ? 'Question' : 'Answer'}
                         </Text>
+                        <View style={{marginLeft: 50}}>
+                            <Text style={styles.correctLabel}>
+                                Correct: {correctResponses}
+                            </Text>
+                            <Text style={styles.inCorrectLabel}>
+                                Incorrect: {incorrectResponses}
+                            </Text>
+                        </View>
                     </View>
                     <Animated.View style={[styles.flipCard, frontAnimatedStyle, {opacity: this.frontOpacity}]}>
-                        <Card>
+                        <Card containerStyle={{padding: 50}}>
                             <Text style={{fontSize: 24, marginLeft: 10}}>
                                 {currentQuestion ? currentQuestion.question : ''}
                             </Text>
@@ -139,19 +158,19 @@ class QuizView extends Component {
                     </Animated.View>
                     <View style={styles.buttonContainer}>
                             <Button
-                                backgroundColor='green'
+                                backgroundColor='black'
                                 color='white'
                                 onPress={() => this.incrementQuestionCounter('correct')}
                                 title='Correct'/>
                                 <Divider style={{  margin: 10 }} />
                             <Button
-                                backgroundColor='red'
-                                color='white'
+                                backgroundColor='#cbcbcb'
+                                color='black'
                                 onPress={() => this.incrementQuestionCounter('incorrect')}
                                 title='Incorrect'/>
                     </View>
                     <Animated.View style={[styles.flipCard, styles.flipCardBack, backAnimatedStyle, {opacity: this.backOpacity}]}>
-                        <Card >
+                        <Card containerStyle={{padding: 50}}>
                             <Text style={{fontSize: 24, marginLeft: 50, marginRight: 50}}>
                                 {currentQuestion ? currentQuestion.answer : ''}
                             </Text>
@@ -171,6 +190,7 @@ class QuizView extends Component {
                     title={deck.title}
                     correctPercent={resultsCorrectPercent}
                     incorrectPercent={resultsIncorrectPercent}
+                    numberOfQuestions={totalNumberOfQuestions}
                     navigation={navigation}
                     resetQuiz={this.handleResetQuiz}/>
                 }
@@ -195,7 +215,7 @@ const styles = StyleSheet.create({
         paddingTop: 20,
     },
     progressContainer: {
-        marginLeft: 100,
+        marginLeft: 30,
         flexDirection: 'row',
     },
     progress: {
@@ -218,6 +238,16 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: 'black',
         textAlign: 'center',
+    },
+    correctLabel: {
+        fontSize: 18,
+        color: 'green',
+        fontWeight: 'bold'
+    },
+    inCorrectLabel: {
+        fontSize: 18,
+        color: 'red',
+        fontWeight: 'bold'
     },
     buttonContainer: {
         paddingTop: 100,

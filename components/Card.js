@@ -18,7 +18,7 @@ class Card extends Component {
     static navigationOptions = ({ navigation }) => {
         const { title } = navigation.state.params
         return {
-            title: `${title}   ▶   Add Card`
+            title: 'Add Card'
         }
     }
 
@@ -30,14 +30,22 @@ class Card extends Component {
 
     handleAddNewCard = () => {
         const { question, answer } = this.state
-        this.props.saveCard(question,answer)
-        this.props.goBack()
+        if(question.trim() !== '' && answer.trim() !== '') {
+            this.props.saveCard(question,answer)
+            this.props.goBack()
+        } else{
+            alert('Question/Answer cannot be empty!')
+        }
     }
 
     render () {
         const { question, answer } = this.state
+        const { deck } = this.props
         return (
             <KeyboardAvoidingView style={styles.container}>
+                <Text style={styles.title}>
+                    Deck: {deck.title}
+                </Text>
                 <Text style={styles.header}>
                     Type a Question and Answer for Your Card
                 </Text>
@@ -96,11 +104,18 @@ const styles = StyleSheet.create({
     container: {
         paddingTop: 20
     },
+    title: {
+        fontWeight: 'bold',
+        fontSize: 24,
+        color: 'black',
+        textAlign: 'center',
+    },
     header: {
         fontWeight: 'normal',
         fontSize: 18,
         color: 'black',
         textAlign: 'center',
+        marginTop: 10
     },
     inputContainer: {
         flex: 1,

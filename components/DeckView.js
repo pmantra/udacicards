@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import { View, Text, Keyboard, Button, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, Keyboard, TouchableOpacity, StyleSheet } from 'react-native'
 import { connect } from 'react-redux'
 import { FontAwesome } from '@expo/vector-icons'
 import { removeDeck } from '../utils/api'
 import { deleteDeck } from '../actions'
+import { Button, Divider } from 'react-native-elements'
+import { clearLocalNotification, setLocalNotification } from '../utils/helpers'
 
 class DeckView extends Component {
 
@@ -27,11 +29,17 @@ class DeckView extends Component {
     }
 
     handleStartQuiz (deck) {
-        const { title } = deck
-        this.props.navigation.navigate(
-            'QuizView',
-            { title }
-        )
+        const { title, questions } = deck
+        if(questions.length === 0) {
+            alert('Sorry there are no cards in this deck')
+        } else {
+            clearLocalNotification()
+                .then(setLocalNotification)
+            this.props.navigation.navigate(
+                'QuizView',
+                { title }
+            )
+        }
     }
 
     handleDeleteDeck (deck) {
@@ -50,14 +58,16 @@ class DeckView extends Component {
                 </Text>
                 <View style={styles.buttonContainer}>
                     <Button
+                        backgroundColor='black'
+                        color='white'
                         onPress={() => this.handleAddNewCard(deck)}
-                        title="Add Card"
-                        color='black' />
-                    <View style={styles.spacer}></View>
+                        title='Add Card'/>
+                    <Divider style={{  margin: 10 }} />
                     <Button
+                        backgroundColor='#cbcbcb'
+                        color='black'
                         onPress={() => this.handleStartQuiz(deck)}
-                        title="Start Quiz"
-                        color='#8181a0' />
+                        title='Start Quiz'/>
                     <View style={styles.deleteContainer}></View>
                     <TouchableOpacity onPress={() => this.handleDeleteDeck(deck)}>
                         <Text style={styles.delete}>

@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import * as Progress from 'react-native-progress'
-import { Button, Divider } from 'react-native-elements'
+import { Button, Divider, Card } from 'react-native-elements'
 
 function restartQuiz(resetQuiz) {
     resetQuiz()
@@ -12,58 +12,41 @@ function backToDecks(navigation) {
 }
 
 export default ResultsView = (props) => {
-    const { title, correctPercent, incorrectPercent, navigation, resetQuiz } = props
+    const { title, correctPercent, incorrectPercent, navigation, resetQuiz, numberOfQuestions } = props
     return (
         <View>
-            <Text style={styles.resultsLabel}>Quiz Results</Text>
-            <View style={{flex: 1, flexDirection: 'column', justifyContent: 'space-between'}}>
-                <View style={styles.resultsContainer}>
-                    <View style={{flex: 1, flexDirection: 'row'}}>
-                        <View style={{width: 100}}>
-                            <Text style={{marginLeft: 20, fontSize: 18, fontWeight: 'bold', color: 'gray'}}>Deck</Text>
-                        </View>
-                        <View style={{width: 200}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>{title}</Text>
-                        </View>
-                    </View>
+            <Card title="Results">
+                <View style={styles.resultsRow}>
+                    <Text style={styles.rowLabel}>Deck</Text>
+                    <Text style={styles.rowValue}>{title}</Text>
                 </View>
-                <View style={styles.resultsContainer}>
-                    <View style={{flex: 1, flexDirection: 'row'}}>
-                        <View style={{width: 100}}>
-                            <Text style={{marginLeft: 20, fontSize: 18, fontWeight: 'bold', color: 'gray'}}>Correct</Text>
-                        </View>
-                        <View style={{width: 75}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>{correctPercent}%</Text>
-                        </View>
-                        <View style={{width: 125, height: 50}}>
-                            <Progress.Bar
-                                color='green'
-                                progress={correctPercent/100}
-                                width={150}
-                                height={20} />
-                        </View>
-                    </View>
+                <Divider style={{margin:10}}/>
+                <View style={styles.resultsRow}>
+                    <Text style={styles.rowLabel}>Number of Questions</Text>
+                    <Text style={styles.rowValue}>{numberOfQuestions}</Text>
                 </View>
-                <View style={styles.resultsContainer}>
-                    <View style={{flex: 1, flexDirection: 'row'}}>
-                        <View style={{width: 100}}>
-                            <Text style={{marginLeft: 20, fontSize: 18, fontWeight: 'bold', color: 'gray'}}>Incorrect</Text>
-                        </View>
-                        <View style={{width: 75}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>{incorrectPercent}%</Text>
-                        </View>
-                        <View style={{width: 125, height: 50}}>
-                            <Progress.Bar
-                                color='red'
-                                progress={incorrectPercent/100}
-                                width={150}
-                                height={20} />
-                        </View>
-                    </View>
+                <Divider style={{margin:10}}/>
+                <View style={styles.resultsRow}>
+                    <Text style={styles.rowLabel}>Correct</Text>
+                    <Progress.Bar
+                        color='green'
+                        progress={correctPercent/100}
+                        width={150}
+                        height={20}/>
+                    <Text style={styles.rowValue}>{correctPercent}%</Text>
                 </View>
-            </View>
-            <View>
-                <View style={styles.buttonContainer}>
+                <Divider style={{margin:10}}/>
+                <View style={styles.resultsRow}>
+                    <Text style={styles.rowLabel}>Incorrect</Text>
+                    <Progress.Bar
+                        color='red'
+                        progress={incorrectPercent/100}
+                        width={150}
+                        height={20} />
+                    <Text style={styles.rowValue}>{incorrectPercent}%</Text>
+                </View>
+            </Card>
+            <View style={styles.buttonContainer}>
                     <Button
                         backgroundColor='black'
                         color='white'
@@ -75,13 +58,17 @@ export default ResultsView = (props) => {
                         color='black'
                         title='Back To Deck'
                         onPress={() => backToDecks(navigation)}/>
-                </View>
             </View>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'space-between'
+    },
     resultsLabel: {
         marginTop: 10,
         fontWeight: 'bold',
@@ -94,6 +81,22 @@ const styles = StyleSheet.create({
         marginLeft: 10
     },
     buttonContainer: {
-        paddingTop: 250,
+        paddingTop: 100,
+    },
+    resultsRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'baseline'
+    },
+    rowLabel: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'gray',
+    },
+    rowValue: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'black',
     }
+
 })

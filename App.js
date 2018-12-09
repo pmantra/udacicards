@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Platform } from 'react-native'
 import { white, purple, black } from './utils/colors'
-import { createMaterialTopTabNavigator, createAppContainer, createStackNavigator } from  'react-navigation'
+import { createMaterialTopTabNavigator, createAppContainer, createStackNavigator, createBottomTabNavigator } from  'react-navigation'
 import Decks from './components/Decks'
 import AddDeck from './components/AddDeck'
 import { createStore } from 'redux'
@@ -11,20 +11,20 @@ import UdaciStatusBar from './components/UdaciStatusBar'
 import DeckView from './components/DeckView'
 import Card from './components/Card'
 import QuizView from './components/QuizView'
+import { setLocalNotification } from './utils/helpers'
+import { Ionicons } from '@expo/vector-icons'
 
-const Tabs = createAppContainer(createMaterialTopTabNavigator({
+const AndroidTabs = createAppContainer(createMaterialTopTabNavigator({
   Decks: {
     screen: Decks,
     navigationOptions: {
-      tabBarLabel: 'Decks',
-      tabBarIcon: ({tintColor}) => <Ionicons name='ios-bookmarks' size={30} color={tintColor} />
+      tabBarLabel: 'Decks'
     }
   },
   AddDeck: {
     screen: AddDeck,
     navigationOptions: {
-      tabBarLabel: 'New Deck',
-      tabBarIcon: ({tintColor}) => <FontAwesome name='plus-square' size={30} color={tintColor} />
+      tabBarLabel: 'New Deck'
     }
   }
 },
@@ -33,10 +33,10 @@ const Tabs = createAppContainer(createMaterialTopTabNavigator({
     header: null
   },
   tabBarOptions: {
-    activeTintColor: Platform.OS === 'ios' ? purple : white,
+    activeTintColor: white,
     style: {
       height: 56,
-      backgroundColor: Platform.OS === 'ios' ? white : black,
+      backgroundColor: black,
       shadowColor: 'rgba(0, 0, 0, 0.24)',
       shadowOffset: {
         width: 0,
@@ -48,9 +48,45 @@ const Tabs = createAppContainer(createMaterialTopTabNavigator({
   }
 }))
 
+const IOSTabs = createBottomTabNavigator({
+  Decks: {
+    screen: Decks,
+    navigationOptions: {
+      tabBarLabel: 'Decks',
+      tabBarIcon: ({tintColor}) => <Ionicons name='ios-list' size={30} color={tintColor} />
+    }
+  },
+  AddDeck: {
+    screen: AddDeck,
+    navigationOptions: {
+      tabBarLabel: 'New Deck',
+      tabBarIcon: ({tintColor}) => <Ionicons name='ios-add' size={30} color={tintColor} />
+    }
+  }
+},
+{
+  navigationOptions: {
+    header: null
+  },
+  tabBarOptions: {
+    activeTintColor: white,
+    style: {
+      height: 56,
+      backgroundColor: black,
+      shadowColor: 'rgba(0, 0, 0, 0.24)',
+      shadowOffset: {
+        width: 0,
+        height: 3
+      },
+      shadowRadius: 6,
+      shadowOpacity: 1
+    }
+  }
+})
+
 const MainNavigator = createAppContainer(createStackNavigator({
   Home: {
-    screen: Tabs,
+    screen: Platform.OS === 'android' ? AndroidTabs : IOSTabs,
     navigationOptions: {
       header: null
     }
@@ -86,6 +122,11 @@ const MainNavigator = createAppContainer(createStackNavigator({
 }))
 
 export default class App extends React.Component {
+
+  componentDidMount() {
+    setLocalNotification()
+  }
+
   render() {
     return (
       <Provider store={createStore(reducer)}>
